@@ -1,70 +1,91 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.sql.*;
 
 public class Main {
+
+    private static Connection connection;
+    private static Statement stmt;
+    private static PreparedStatement pstmt;
+
+    public static void connect() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:main.db");
+            stmt = connection.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void disconnect() {
+        try {
+            connection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void creation() {
+        try {
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS states&population (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, population INTEGER);");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void tabDeleting() {
+        try {
+            stmt.executeUpdate("DROP TABLE IF EXISTS states&population;");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void deleting(){
+        try {
+            stmt.executeUpdate("DELETE FROM states&population WHERE id = 2;");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void addition1() {
+        try {
+            stmt.executeUpdate("INSERT INTO states&population (name, population) VALUES ('Russia', 140);");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void addition2() {
+        try {
+            stmt.executeUpdate("INSERT INTO states&population (name, population) VALUES ('Belarus', 9);");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void reading() {
+        try {
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM states&population;");
+            System.out.println(resultSet.getInt(1) + resultSet.getString(2) + resultSet.getInt(3));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
     public static void main(String[] args) {
-        String[] linkedTypeArray = new String[]{"Japan", "Beatles", "April 12", "2021"};
-        List<String> arrList = new ArrayList<String>();
+        System.out.println("Создать CRUD операции, 1 метод создани таблицы 2 метод для добавления записи 3 метод для получения записи 4 метод для удаления записи 5 удаление таблицы");
 
-        System.out.println("1. Написать метод, который меняет два элемента массива местами.(массив может быть любого ссылочного типа);");
-        System.out.println("Изначальный массив:");
-        System.out.println(Arrays.toString(linkedTypeArray));
-        elementReplace(linkedTypeArray, 1, 3);
-        System.out.println("Массив с перемещенными элементами:");
-        System.out.println(Arrays.toString(linkedTypeArray));
-        System.out.println();
-        System.out.println("2. Написать метод, который преобразует массив в ArrayList;");
-        Collections.addAll(arrList, linkedTypeArray);
-        for (String aL : arrList)
-            System.out.print(aL + " ");
-
-        System.out.println("3. Большая задача:\n" +
-                "a. Есть классы Fruit -> Apple, Orange;(больше фруктов не надо)\n" +
-                "b. Класс Box в который можно складывать фрукты, коробки условно сортируются по типу фрукта, поэтому в одну коробку нельзя сложить и яблоки, и апельсины;\n" +
-                "c. Для хранения фруктов внутри коробки можете использовать ArrayList;\n" +
-                "d. Сделать метод getWeight() который высчитывает вес коробки, зная количество фруктов и вес одного фрукта(вес яблока - 1.0f, апельсина - 1.5f, не важно в каких это единицах);\n" +
-                "e. Внутри класса коробка сделать метод compare, который позволяет сравнить текущую коробку с той, которую подадут в compare в качестве параметра, true - если их веса равны, false в противном случае(коробки с яблоками мы можем сравнивать с коробками с апельсинами);\n" +
-                "f. Написать метод, который позволяет пересыпать фрукты из текущей коробки в другую коробку(помним про сортировку фруктов, нельзя яблоки высыпать в коробку с апельсинами), соответственно в текущей коробке фруктов не остается, а в другую перекидываются объекты, которые были в этой коробке;\n" +
-                "g. Не забываем про метод добавления фрукта в коробку.");
-
-        Orange oranges = new Orange();
-        Apple apples = new Apple();
-        Box<Orange> orangeBox = new Box();
-        Box<Apple> appleBox = new Box();
-        float oBoxW;
-        float aBoxW;
-        for (int i = 0; i < 10; i++) {
-            orangeBox.add(new Orange());
-        }
-
-        for (int i = 0; i < 10; i++) {
-            appleBox.add(new Apple());
-
-        }
-
-        oBoxW = orangeBox.getWeight();
-        aBoxW = appleBox.getWeight();
-
-        System.out.println("Коробка апельсинов весит: " + oBoxW + " кг");
-        System.out.println("Коробка яблок весит: " + aBoxW + " кг");
-
-        if (orangeBox.comparator(appleBox)) {
-            System.out.println("Коробка апельсинов тяжелее коробки яблок");
-        }
-        else {
-            System.out.println("Коробка яблок тяжелее коробки апельсинов");
-        }
+//        try {
+//            ResultSet rs = stmt.executeQuery("SELECT * FROM States");
+//            while (rs.next()){
+//                System.out.print(rs.getInt(1));
+//                System.out.print(rs.getString(2));
+//                System.out.print(rs.getInt(3));
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
     }
-
-    private static <ER> void elementReplace (ER[] array, int fElement, int sElement){
-        ER additional = array[fElement];
-        array[fElement] = array[sElement];
-        array[sElement] = additional;
-
-    }
-
-
-
 }
